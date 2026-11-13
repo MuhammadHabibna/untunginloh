@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#166534"/>
+      <stop offset="50%" stop-color="#15803D"/>
+      <stop offset="100%" stop-color="#0F5132"/>
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FDE047"/>
+      <stop offset="40%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#D97706"/>
+    </linearGradient>
+    <linearGradient id="arrowGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#DCFCE7"/>
+    </linearGradient>
+    <filter id="softShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="16" stdDeviation="16" flood-color="#064E3B" flood-opacity="0.35"/>
+    </filter>
+    <filter id="coinShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#78350F" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Squircle Base -->
+  <rect x="32" y="32" width="448" height="448" rx="112" fill="url(#bgGrad)"/>
+  
+  <!-- Subtle Inner Border Highlight -->
+  <rect x="34" y="34" width="444" height="444" rx="110" fill="none" stroke="#FFFFFF" stroke-opacity="0.12" stroke-width="3"/>
+
+  <!-- Geometric Grid Accent Lines (Subtle financial ledger feeling) -->
+  <circle cx="256" cy="256" r="170" fill="none" stroke="#FFFFFF" stroke-opacity="0.05" stroke-width="1.5" stroke-dasharray="6 6"/>
+
+  <!-- THE LOGOMARK: U-Growth Arc & Arrow -->
+  <g filter="url(#softShadow)">
+    <!-- Base U Curve with Arrowhead -->
+    <!-- Path sweeps down from left stem (148, 160) -> curve through bottom (256, 372) -> ascends to right (364, 210) -> shoots into arrowhead -->
+    <path d="M 148 160
+             L 148 268
+             C 148 334 196 384 256 384
+             C 316 384 364 334 364 268
+             L 364 220" 
+          fill="none" 
+          stroke="url(#arrowGrad)" 
+          stroke-width="44" 
+          stroke-linecap="round" 
+          stroke-linejoin="round"/>
+
+    <!-- Arrowhead at Top-Right of U (Growth Spike) -->
+    <path d="M 312 210
+             L 364 158
+             L 416 210" 
+          fill="none" 
+          stroke="url(#arrowGrad)" 
+          stroke-width="44" 
+          stroke-linecap="round" 
+          stroke-linejoin="round"/>
+  </g>
+
+  <!-- Golden Net Profit Coin / Merchant Insight Dot (The 'LOH' spark) -->
+  <g filter="url(#coinShadow)">
+    <!-- Outer Glow Ring -->
+    <circle cx="256" cy="240" r="54" fill="url(#goldGrad)"/>
+    <circle cx="256" cy="240" r="44" fill="none" stroke="#FEF3C7" stroke-width="4" stroke-opacity="0.8"/>
+    <!-- Inscribed 'Rp' / Growth Symbol in Coin -->
+    <path d="M 244 222 L 244 258 M 244 222 L 258 222 C 267 222 272 227 272 233 C 272 240 267 244 258 244 L 244 244 M 256 244 L 268 258" 
+          fill="none" 
+          stroke="#78350F" 
+          stroke-width="5" 
+          stroke-linecap="round" 
+          stroke-linejoin="round"/>
+  </g>
+</svg>

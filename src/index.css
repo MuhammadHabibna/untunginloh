@@ -1,0 +1,63 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+  --color-untung: #15803d;
+  --color-untung-muda: #dcfce7;
+  --color-waspada: #b45309;
+  --color-waspada-bg: #fef3c7;
+  --color-bocor: #b91c1c;
+  --color-bocor-bg: #fee2e2;
+  --color-info: #1d4ed8;
+  --color-info-bg: #dbeafe;
+  --color-halaman: #faf8f3;
+  --color-garis: #e7e2d8;
+  --color-teks: #1f2937;
+  --color-teks2: #5b6472;
+  --shadow-kartu: 0 1px 2px rgb(31 41 55 / 0.06), 0 1px 3px rgb(31 41 55 / 0.05);
+}
+
+@utility t-angka { font-size: 36px; font-weight: 700; line-height: 1.15; }
+@utility t-h1 { font-size: 28px; font-weight: 700; line-height: 1.2; }
+@utility t-h2 { font-size: 22px; font-weight: 700; line-height: 1.25; }
+@utility t-h3 { font-size: 18px; font-weight: 600; line-height: 1.3; }
+@utility t-isi { font-size: 16px; font-weight: 400; line-height: 1.5; }
+@utility t-harga { font-size: 20px; font-weight: 700; line-height: 1.2; }
+@utility t-ket { font-size: 14px; font-weight: 500; line-height: 1.4; }
+
+@layer base {
+  html, body, #root { height: 100%; }
+  body {
+    background: var(--color-halaman);
+    color: var(--color-teks);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    font-variant-numeric: tabular-nums;
+    -webkit-font-smoothing: antialiased;
+  }
+  button { cursor: pointer; }
+  button:disabled { cursor: not-allowed; opacity: 0.5; }
+  :focus-visible { outline: 3px solid var(--color-info); outline-offset: 2px; }
+}
+
+@keyframes naik { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes muncul { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeInDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes scaleUp { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+@keyframes popIn { 0% { opacity: 0; transform: scale(0.8); } 70% { transform: scale(1.05); } 100% { opacity: 1; transform: scale(1); } }
+@keyframes slideRight { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes pulseSubtle { 0%, 100% { opacity: 1; } 50% { opacity: 0.65; } }
+@keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+
+.anim-naik { animation: naik 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
+.anim-muncul { animation: muncul 0.22s cubic-bezier(0.16, 1, 0.3, 1); }
+.anim-fade-in-up { animation: fadeInUp 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.anim-fade-in-down { animation: fadeInDown 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.anim-fade-in { animation: fadeIn 0.22s ease-out forwards; }
+.anim-scale-up { animation: scaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.anim-pop-in { animation: popIn 0.24s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+.anim-slide-right { animation: slideRight 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.anim-pulse-subtle { animation: pulseSubtle 2.5s ease-in-out infinite; }
