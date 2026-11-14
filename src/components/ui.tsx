@@ -131,10 +131,15 @@ export function Button({
 }
 
 export function Card({ children, className, onClick }: { children: ReactNode; className?: string; onClick?: () => void }) {
+  const hasBg = className ? /\bbg-/.test(className) : false
   return (
     <div
       onClick={onClick}
-      className={cx('bg-white border border-slate-200/80 rounded-2xl p-4 shadow-xs transition-all duration-200', className)}
+      className={cx(
+        !hasBg && 'bg-white',
+        'border border-slate-200/80 rounded-2xl p-4 shadow-xs transition-all duration-200',
+        className
+      )}
     >
       {children}
     </div>

@@ -166,67 +166,67 @@ export function Dashboard() {
 
       {/* 1. ROW 1: 4 KARTU METRIK UTAMA (GRID 4 KOLOM DI DESKTOP) */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
-        {/* Card 1: Untung Bersih */}
-        <Card className="bg-emerald-900 text-white p-5 border-emerald-800 shadow-sm flex flex-col justify-between hover:-translate-y-0.5 hover:shadow-md transition-all duration-200 cursor-default">
+        {/* Card 1: Untung Bersih (Hero Metric Pekat & Kontras Tinggi) */}
+        <Card className="!bg-[#064e3b] text-white p-5 !border-[#043d2e] shadow-md flex flex-col justify-between hover:-translate-y-0.5 hover:shadow-lg transition-all duration-200 cursor-default">
           <div>
-            <div className="flex items-center justify-between text-xs text-emerald-200 mb-1.5">
-              <span className="font-semibold flex items-center">
+            <div className="flex items-center justify-between text-xs text-emerald-100 font-bold mb-1.5">
+              <span className="flex items-center">
                 Untung Bersih Hari Ini <InfoTip termKey="margin" className="text-emerald-200 hover:text-white" />
               </span>
               <Coins size={16} className="text-emerald-300" />
             </div>
-            <div className="text-2xl lg:text-3xl font-black tracking-tight">{rp(a.todayProfit)}</div>
+            <div className="text-2xl lg:text-3xl font-black tracking-tight text-white">{rp(a.todayProfit)}</div>
           </div>
-          <div className="text-xs text-emerald-100 flex items-center gap-1 mt-3 pt-2 border-t border-emerald-800/80">
+          <div className="text-xs text-emerald-200 font-bold flex items-center gap-1 mt-3 pt-2 border-t border-emerald-700/70">
             <ArrowUp size={14} className="text-emerald-300 shrink-0" />
             <span>+{naik}% dari kemarin ({rp(a.yesterdayProfit)})</span>
           </div>
         </Card>
 
         {/* Card 2: Penjualan */}
-        <Card className="p-5 flex flex-col justify-between hover:-translate-y-0.5 hover:shadow-xs transition-all duration-200 cursor-default">
+        <Card className="p-5 flex flex-col justify-between hover:-translate-y-0.5 hover:shadow-xs transition-all duration-200 cursor-default border-slate-200">
           <div>
-            <div className="flex items-center justify-between text-xs text-slate-500 mb-1.5">
-              <span className="font-semibold flex items-center">
+            <div className="flex items-center justify-between text-xs text-slate-600 font-bold mb-1.5">
+              <span className="flex items-center">
                 Penjualan Kotor <InfoTip termKey="omzet" />
               </span>
-              <ShoppingBag size={16} className="text-slate-400" />
+              <ShoppingBag size={16} className="text-slate-500" />
             </div>
             <div className="text-2xl lg:text-3xl font-black text-slate-900">{rp(a.todaySales)}</div>
           </div>
-          <span className="text-xs text-slate-400 mt-3 pt-2 border-t border-slate-100 block">
+          <span className="text-xs text-slate-500 font-medium mt-3 pt-2 border-t border-slate-100 block">
             Akumulasi seluruh jalur jualan
           </span>
         </Card>
 
         {/* Card 3: Rata-rata Modal per Porsi (HPP) */}
-        <Card className="p-5 flex flex-col justify-between hover:-translate-y-0.5 hover:shadow-xs transition-all duration-200 cursor-default">
+        <Card className="p-5 flex flex-col justify-between hover:-translate-y-0.5 hover:shadow-xs transition-all duration-200 cursor-default border-slate-200">
           <div>
-            <div className="flex items-center justify-between text-xs text-slate-500 mb-1.5">
-              <span className="font-semibold flex items-center">
+            <div className="flex items-center justify-between text-xs text-slate-600 font-bold mb-1.5">
+              <span className="flex items-center">
                 Rata-rata HPP <InfoTip termKey="hpp" />
               </span>
-              <Package size={16} className="text-slate-400" />
+              <Package size={16} className="text-slate-500" />
             </div>
             <div className="text-2xl lg:text-3xl font-black text-slate-900">{rp(4350)}</div>
           </div>
-          <span className="text-xs text-emerald-700 font-semibold mt-3 pt-2 border-t border-slate-100 block">
+          <span className="text-xs text-emerald-800 font-extrabold mt-3 pt-2 border-t border-slate-100 block">
             HPP stabil terkendali
           </span>
         </Card>
 
         {/* Card 4: Sisa Kuota AI */}
-        <Card className="p-5 flex flex-col justify-between hover:-translate-y-0.5 hover:shadow-xs transition-all duration-200 cursor-default">
+        <Card className="p-5 flex flex-col justify-between hover:-translate-y-0.5 hover:shadow-xs transition-all duration-200 cursor-default border-slate-200">
           <div>
-            <div className="flex items-center justify-between text-xs text-slate-500 mb-1.5">
-              <span className="font-semibold">Kuota AI Aktif</span>
-              <Cpu size={16} className="text-emerald-700 animate-pulse" />
+            <div className="flex items-center justify-between text-xs text-slate-600 font-bold mb-1.5">
+              <span>Kuota AI Aktif</span>
+              <Cpu size={16} className="text-emerald-800 animate-pulse" />
             </div>
             <div className="text-2xl lg:text-3xl font-black text-slate-900">
-              {a.aiLimit - a.aiUsed} <span className="text-sm font-normal text-slate-400">/ {a.aiLimit}</span>
+              {a.aiLimit - a.aiUsed} <span className="text-sm font-semibold text-slate-500">/ {a.aiLimit}</span>
             </div>
           </div>
-          <span className="text-xs text-slate-400 mt-3 pt-2 border-t border-slate-100 block truncate">
+          <span className="text-xs text-slate-500 font-medium mt-3 pt-2 border-t border-slate-100 block truncate">
             {a.plan === 'trial' ? 'Paket Free Trial 14 Hari' : 'Paket Dasar UMKM'}
           </span>
         </Card>
