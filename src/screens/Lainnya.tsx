@@ -31,11 +31,14 @@ import { testGeminiConnection } from '../lib/gemini'
 export function Riwayat() {
   const a = useApp()
   const isOwner = a.role === 'owner'
-  const [filterDay, setFilterDay] = useState<'all' | 'today' | 'yesterday'>('all')
+  const [filterDay, setFilterDay] = useState<'today' | 'history'>('today')
+
+  const todayCount = a.txs.filter((t) => t.day === 'today').length
+  const historyCount = a.txs.filter((t) => t.day !== 'today').length
 
   const filtered = a.txs.filter((t) => {
-    if (filterDay === 'all') return true
-    return t.day === filterDay
+    if (filterDay === 'today') return t.day === 'today'
+    return t.day !== 'today'
   })
 
   return (
@@ -45,31 +48,65 @@ export function Riwayat() {
         <div>
           <h1 className="text-xl lg:text-2xl font-black text-slate-900 tracking-tight">Riwayat Transaksi</h1>
           <p className="text-xs text-slate-500 font-medium mt-0.5">
-            {a.shop.name} &bull; {filtered.length} transaksi tercatat dalam sistem
+            {a.shop.name} &bull; {filtered.length} transaksi {filterDay === 'today' ? 'hari ini' : 'riwayat sebelumnya'}
           </p>
         </div>
 
-        {/* Filter Tab */}
+        {/* Filter Tab: Hari Ini & Riwayat */}
         <div className="flex bg-slate-200/70 p-1 rounded-xl text-xs font-bold border border-slate-300/80 self-start sm:self-auto">
-          {(['all', 'today', 'yesterday'] as const).map((key) => (
-            <button
-              key={key}
-              type="button"
-              onClick={() => setFilterDay(key)}
+          <button
+            type="button"
+            onClick={() => setFilterDay('today')}
+            className={cx(
+              'px-4 py-1.5 rounded-lg transition-all cursor-pointer flex items-center gap-1.5',
+              filterDay === 'today'
+                ? 'bg-white text-emerald-800 shadow-2xs font-extrabold'
+                : 'text-slate-600 hover:text-slate-900'
+            )}
+          >
+            <span>Hari Ini</span>
+            <span
               className={cx(
-                'px-3.5 py-1.5 rounded-lg transition-all cursor-pointer',
-                filterDay === key ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-600 hover:text-slate-900'
+                'text-[10px] px-1.5 py-0.2 rounded-full font-bold',
+                filterDay === 'today' ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-300/80 text-slate-700'
               )}
             >
-              {key === 'all' ? 'Semua Hari' : key === 'today' ? 'Hari Ini' : 'Kemarin'}
-            </button>
-          ))}
+              {todayCount}
+            </span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setFilterDay('history')}
+            className={cx(
+              'px-4 py-1.5 rounded-lg transition-all cursor-pointer flex items-center gap-1.5',
+              filterDay === 'history'
+                ? 'bg-white text-emerald-800 shadow-2xs font-extrabold'
+                : 'text-slate-600 hover:text-slate-900'
+            )}
+          >
+            <span>Riwayat</span>
+            <span
+              className={cx(
+                'text-[10px] px-1.5 py-0.2 rounded-full font-bold',
+                filterDay === 'history' ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-300/80 text-slate-700'
+              )}
+            >
+              {historyCount}
+            </span>
+          </button>
         </div>
       </div>
 
       {/* List Transaksi Responsif */}
       {filtered.length === 0 ? (
-        <EmptyState title="Belum ada transaksi" text="Catat transaksi pertama Anda melalui layar kasir POS." />
+        <EmptyState
+          title={filterDay === 'today' ? 'Belum ada transaksi hari ini' : 'Belum ada riwayat transaksi lampau'}
+          text={
+            filterDay === 'today'
+              ? 'Catat transaksi penjualan hari ini melalui kasir POS untuk melihat daftarnya.'
+              : 'Transaksi dari hari-hari sebelumnya atau catatan susulan akan otomatis tersimpan di sini.'
+          }
+        />
       ) : (
         <div className="space-y-3">
           {filtered.map((t) => (
