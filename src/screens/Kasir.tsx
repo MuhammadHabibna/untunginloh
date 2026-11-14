@@ -84,8 +84,8 @@ export function Kasir() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* KOLOM KIRI (CATALOG MENU) */}
         <div className="lg:col-span-8 space-y-4">
-          {/* Controls: Tanggal Fleksibel & Search */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-xs">
+          {/* Controls: Tanggal Fleksibel */}
+          <div className="flex flex-wrap items-center justify-between gap-3 bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-xs">
             {/* Tanggal Input Tipe Date Fleksibel */}
             <div className="flex flex-wrap items-center gap-2 text-xs">
               <span className="font-bold text-slate-600 flex items-center gap-1.5 shrink-0">
@@ -116,26 +116,36 @@ export function Kasir() {
                 )}
               </div>
             </div>
-
-            {/* Search Input */}
-            <div className="relative w-full sm:w-64">
-              <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-              <input
-                className={inputCls + ' pl-9 text-xs h-9'}
-                placeholder="Cari menu…"
-                value={q}
-                onChange={(e) => setQ(e.target.value)}
-              />
-            </div>
+            <span className="text-[11px] text-slate-400 hidden sm:inline">Pencatatan kasir fleksibel</span>
           </div>
 
-          {/* Jalur Jualan */}
+          {/* Jalur Jualan (Di Tempat, Bungkus, GoFood, ShopeeFood) */}
           <ChannelChips
             value={a.channel}
             onChange={a.setChannel}
             comm={a.comm}
             onOpenCommSetting={() => setShowCommModal(true)}
           />
+
+          {/* Search Bar Menu (Diletakkan di atas katalog menu) */}
+          <div className="relative">
+            <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+            <input
+              className={inputCls + ' pl-9 pr-9 text-xs h-10 w-full bg-white shadow-2xs focus:bg-white'}
+              placeholder="Cari menu minuman atau makanan…"
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+            />
+            {q && (
+              <button
+                type="button"
+                onClick={() => setQ('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400 hover:text-slate-600 px-1.5 py-0.5 rounded cursor-pointer"
+              >
+                Reset
+              </button>
+            )}
+          </div>
 
           {/* Grid Menu Tiles */}
           {list.length === 0 ? (
