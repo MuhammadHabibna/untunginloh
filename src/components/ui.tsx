@@ -611,20 +611,27 @@ export function Sheet({ title, children, onClose }: { title: string; children: R
     <div
       role="dialog"
       aria-modal="true"
-      className="fixed inset-0 z-50 flex flex-col justify-end bg-slate-900/60 backdrop-blur-xs anim-fade-in"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs anim-fade-in overflow-y-auto"
       onClick={onClose}
     >
       <div
-        className="w-full max-h-[85dvh] overflow-y-auto rounded-t-2xl bg-white border-t border-slate-200 shadow-xl p-4 anim-naik"
+        className="w-full max-w-md max-h-[88dvh] flex flex-col rounded-2xl bg-white border border-slate-200 shadow-2xl p-5 anim-scale-up my-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between pb-2 mb-3 border-b border-slate-100">
+        <div className="flex items-center justify-between pb-2.5 mb-3 border-b border-slate-100 shrink-0">
           <h3 className="font-bold text-sm text-slate-900">{title}</h3>
-          <button type="button" onClick={onClose} className="size-7 rounded-full text-slate-400 hover:text-slate-700 grid place-items-center cursor-pointer" aria-label="Tutup">
+          <button
+            type="button"
+            onClick={onClose}
+            className="size-7 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 grid place-items-center cursor-pointer shrink-0"
+            aria-label="Tutup"
+          >
             <X size={16} />
           </button>
         </div>
-        {children}
+        <div className="overflow-y-auto flex-1 overscroll-contain pr-0.5">
+          {children}
+        </div>
       </div>
     </div>
   )
