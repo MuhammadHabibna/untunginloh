@@ -1,5 +1,6 @@
 // src/components/ui.tsx - Clean, Minimalist UI Components (Zero AI Slop)
-import { useState, type ReactNode } from 'react'
+import { useState, useEffect, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
 import {
   ArrowDown,
   ArrowUp,
@@ -32,7 +33,67 @@ export function InfoTip({ termKey, className = '' }: { termKey: keyof typeof TER
   const [open, setOpen] = useState(false)
   const item: TermInfo | undefined = TERMS[termKey]
 
+  useEffect(() => {
+    if (!open) return
+    const prevOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false)
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.body.style.overflow = prevOverflow
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [open])
+
   if (!item) return null
+
+  const modal = open ? (
+    <div
+      role="dialog"
+      aria-modal="true"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs anim-fade-in"
+      onClick={() => setOpen(false)}
+    >
+      <div
+        className="w-full max-w-sm rounded-2xl bg-white border border-slate-200 shadow-2xl p-5 text-left anim-scale-up"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-start justify-between gap-3 mb-2.5">
+          <div>
+            <h4 className="font-bold text-slate-900 text-base">{item.title}</h4>
+            <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">{item.subtitle}</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setOpen(false)}
+            className="size-7 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 grid place-items-center cursor-pointer shrink-0"
+            aria-label="Tutup"
+          >
+            <X size={16} />
+          </button>
+        </div>
+
+        <p className="text-xs text-slate-600 leading-relaxed mb-3.5">{item.desc}</p>
+
+        {item.formula && (
+          <div className="rounded-xl bg-slate-50 border border-slate-200 p-3 text-xs text-slate-700 font-mono mb-4">
+            <span className="font-bold text-slate-800 block text-[11px] font-sans mb-1">Rumus / Acuan:</span>
+            {item.formula}
+          </div>
+        )}
+
+        <button
+          type="button"
+          onClick={() => setOpen(false)}
+          className="w-full h-10 rounded-xl bg-emerald-700 text-white font-bold text-xs hover:bg-emerald-800 transition-colors cursor-pointer"
+        >
+          Tutup
+        </button>
+      </div>
+    </div>
+  ) : null
 
   return (
     <>
@@ -51,48 +112,7 @@ export function InfoTip({ termKey, className = '' }: { termKey: keyof typeof TER
         <Info size={12} strokeWidth={2.2} />
       </button>
 
-      {open && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs anim-muncul"
-          onClick={() => setOpen(false)}
-        >
-          <div
-            className="w-full max-w-sm rounded-2xl bg-white border border-slate-200 shadow-xl p-5 text-left"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-start justify-between gap-3 mb-2">
-              <div>
-                <h4 className="font-bold text-slate-900 text-base">{item.title}</h4>
-                <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">{item.subtitle}</span>
-              </div>
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                className="size-7 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 grid place-items-center"
-              >
-                <X size={16} />
-              </button>
-            </div>
-
-            <p className="text-xs text-slate-600 leading-relaxed mb-3">{item.desc}</p>
-
-            <div className="rounded-xl bg-slate-50 border border-slate-200 p-2.5 text-xs text-slate-700 font-mono">
-              <span className="font-bold text-slate-800 block text-[11px] font-sans mb-0.5">Rumus:</span>
-              {item.formula}
-            </div>
-
-            <button
-              type="button"
-              onClick={() => setOpen(false)}
-              className="mt-4 w-full h-10 rounded-xl bg-emerald-700 text-white font-bold text-xs hover:bg-emerald-800 transition-colors"
-            >
-              Tutup
-            </button>
-          </div>
-        </div>
-      )}
+      {modal && typeof document !== 'undefined' ? createPortal(modal, document.body) : modal}
     </>
   )
 }
@@ -420,6 +440,20 @@ export function CommissionModal({ open, onClose }: { open: boolean; onClose: () 
   const [gf, setGf] = useState(a.comm.gofood)
   const [sh, setSh] = useState(a.comm.shopee)
 
+  useEffect(() => {
+    if (!open) return
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => {
+      document.body.style.overflow = prev
+      window.removeEventListener('keydown', onKey)
+    }
+  }, [open, onClose])
+
   if (!open) return null
 
   const handleSave = () => {
@@ -428,12 +462,20 @@ export function CommissionModal({ open, onClose }: { open: boolean; onClose: () 
     onClose()
   }
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs anim-muncul">
-      <div className="w-full max-w-xs rounded-2xl bg-white border border-slate-200 shadow-xl p-4">
+  const modal = (
+    <div
+      role="dialog"
+      aria-modal="true"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs anim-fade-in"
+      onClick={onClose}
+    >
+      <div
+        className="w-full max-w-xs rounded-2xl bg-white border border-slate-200 shadow-xl p-4 anim-scale-up"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="flex items-center justify-between mb-3">
           <h3 className="font-bold text-sm text-slate-900">Potongan Aplikasi</h3>
-          <button type="button" onClick={onClose} className="p-1 text-slate-400 hover:text-slate-700">
+          <button type="button" onClick={onClose} className="p-1 text-slate-400 hover:text-slate-700 cursor-pointer" aria-label="Tutup">
             <X size={16} />
           </button>
         </div>
@@ -456,6 +498,8 @@ export function CommissionModal({ open, onClose }: { open: boolean; onClose: () 
       </div>
     </div>
   )
+
+  return typeof document !== 'undefined' ? createPortal(modal, document.body) : modal
 }
 
 /* =========================================================
@@ -463,12 +507,13 @@ export function CommissionModal({ open, onClose }: { open: boolean; onClose: () 
    ========================================================= */
 export function Toast({ msg }: { msg: string | null }) {
   if (!msg) return null
-  return (
+  const toastContent = (
     <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 rounded-xl bg-slate-900 text-white px-4 py-2.5 text-xs font-bold shadow-xl border border-slate-700/60 anim-fade-in-down flex items-center gap-2.5">
       <CircleCheck size={15} className="text-emerald-400 shrink-0 animate-pulse" />
       <span>{msg}</span>
     </div>
   )
+  return typeof document !== 'undefined' ? createPortal(toastContent, document.body) : toastContent
 }
 
 export function TrialBanner({ onClick }: { onClick: () => void }) {
@@ -497,12 +542,33 @@ export function EmptyState({ title, text, action }: { title: string; text: strin
 }
 
 export function Sheet({ title, children, onClose }: { title: string; children: ReactNode; onClose: () => void }) {
-  return (
-    <div className="fixed inset-0 z-50 flex flex-col justify-end bg-slate-900/50 backdrop-blur-xs anim-muncul">
-      <div className="w-full max-h-[85dvh] overflow-y-auto rounded-t-2xl bg-white border-t border-slate-200 shadow-xl p-4 anim-naik">
+  useEffect(() => {
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => {
+      document.body.style.overflow = prev
+      window.removeEventListener('keydown', onKey)
+    }
+  }, [onClose])
+
+  const sheetContent = (
+    <div
+      role="dialog"
+      aria-modal="true"
+      className="fixed inset-0 z-50 flex flex-col justify-end bg-slate-900/60 backdrop-blur-xs anim-fade-in"
+      onClick={onClose}
+    >
+      <div
+        className="w-full max-h-[85dvh] overflow-y-auto rounded-t-2xl bg-white border-t border-slate-200 shadow-xl p-4 anim-naik"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="flex items-center justify-between pb-2 mb-3 border-b border-slate-100">
           <h3 className="font-bold text-sm text-slate-900">{title}</h3>
-          <button type="button" onClick={onClose} className="size-7 rounded-full text-slate-400 hover:text-slate-700 grid place-items-center">
+          <button type="button" onClick={onClose} className="size-7 rounded-full text-slate-400 hover:text-slate-700 grid place-items-center cursor-pointer" aria-label="Tutup">
             <X size={16} />
           </button>
         </div>
@@ -510,4 +576,6 @@ export function Sheet({ title, children, onClose }: { title: string; children: R
       </div>
     </div>
   )
+
+  return typeof document !== 'undefined' ? createPortal(sheetContent, document.body) : sheetContent
 }
