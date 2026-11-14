@@ -83,7 +83,7 @@ function MainShell() {
   }
 
   return (
-    <div className="h-dvh w-full bg-[#F8FAFC] flex overflow-hidden font-sans select-none text-slate-800">
+    <div className="fixed inset-0 w-full h-full bg-[#F8FAFC] flex overflow-hidden font-sans select-none text-slate-800">
       <Toast msg={a.toastMsg} />
 
       {/* 1. SIDEBAR DESKTOP WEB ASLI (TAMPIL DI LAYAR LAPTOP / PC) */}
@@ -236,8 +236,16 @@ function MainShell() {
         </header>
 
         {/* Main View Scrollable */}
-        <main ref={scrollRef} className="flex-1 overflow-y-auto">
-          <div className="w-full anim-fade-in pb-20 lg:pb-8" key={`${a.tenantId}-${a.screen}`}>{currentView}</div>
+        <main ref={scrollRef} className="flex-1 overflow-y-auto overscroll-none">
+          <div
+            className={cx(
+              'w-full anim-fade-in',
+              a.screen === 'tanya' || a.screen === 'ringkasan' ? 'min-h-full flex flex-col' : 'pb-16 lg:pb-8'
+            )}
+            key={`${a.tenantId}-${a.screen}`}
+          >
+            {currentView}
+          </div>
         </main>
 
         {/* Floating Cart Bar di Kasir (Hanya tampil di Mobile jika item > 0) */}
@@ -247,7 +255,7 @@ function MainShell() {
         <nav
           data-name="Navigasi Bawah Mobile"
           aria-label="Navigasi utama mobile"
-          className="lg:hidden bg-white/95 backdrop-blur-md border-t border-slate-200/80 grid shrink-0 z-30"
+          className="lg:hidden bg-white/95 backdrop-blur-md border-t border-slate-200/80 grid shrink-0 z-30 pb-[env(safe-area-inset-bottom)]"
           style={{ gridTemplateColumns: `repeat(${visibleTabs.length}, 1fr)` }}
         >
           {visibleTabs.map((t) => {

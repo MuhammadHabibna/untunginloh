@@ -610,7 +610,7 @@ export function Tanya() {
   }
 
   return (
-    <div data-name="Layar Tanya AI" className="p-4 lg:p-8 max-w-3xl mx-auto min-h-dvh flex flex-col justify-between">
+    <div data-name="Layar Tanya AI" className="p-4 lg:p-8 max-w-3xl mx-auto flex-1 flex flex-col justify-between min-h-full">
       <div className="space-y-4">
         <div className="flex items-center justify-between pb-3 border-b border-slate-200">
           <div>
@@ -671,7 +671,7 @@ export function Tanya() {
       </div>
 
       {/* Input Form */}
-      <div className="sticky bottom-0 bg-[#F8FAFC] pt-3 pb-4">
+      <div className="sticky bottom-0 bg-[#F8FAFC] pt-3 pb-2 z-10">
         <form
           onSubmit={(e) => {
             e.preventDefault()

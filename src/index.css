@@ -11,8 +11,8 @@
   --color-bocor-bg: #fee2e2;
   --color-info: #1d4ed8;
   --color-info-bg: #dbeafe;
-  --color-halaman: #faf8f3;
-  --color-garis: #e7e2d8;
+  --color-halaman: #F8FAFC;
+  --color-garis: #e2e8f0;
   --color-teks: #1f2937;
   --color-teks2: #5b6472;
   --shadow-kartu: 0 1px 2px rgb(31 41 55 / 0.06), 0 1px 3px rgb(31 41 55 / 0.05);
@@ -27,14 +27,22 @@
 @utility t-ket { font-size: 14px; font-weight: 500; line-height: 1.4; }
 
 @layer base {
-  html, body, #root { height: 100%; }
+  html, body, #root {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background: #F8FAFC;
+  }
   body {
-    background: var(--color-halaman);
+    background: #F8FAFC;
     color: var(--color-teks);
     font-family: var(--font-sans);
     font-size: 16px;
     font-variant-numeric: tabular-nums;
     -webkit-font-smoothing: antialiased;
+    overscroll-behavior-y: none;
+    -webkit-tap-highlight-color: transparent;
   }
   button { cursor: pointer; }
   button:disabled { cursor: not-allowed; opacity: 0.5; }

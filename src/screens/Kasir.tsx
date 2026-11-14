@@ -322,7 +322,7 @@ export function Ringkasan() {
   const totalProfit = lastTxList.reduce((s, t) => s + t.profit, 0)
 
   return (
-    <div data-name="Layar Ringkasan" className="p-4 lg:p-8 max-w-lg mx-auto min-h-dvh flex flex-col justify-between">
+    <div data-name="Layar Ringkasan" className="p-4 lg:p-8 max-w-lg mx-auto flex-1 flex flex-col justify-between min-h-full">
       <div className="space-y-6 pt-4">
         {/* Banner Sukses */}
         <div className="text-center space-y-2">
