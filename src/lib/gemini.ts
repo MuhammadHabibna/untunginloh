@@ -33,7 +33,7 @@ export const setActiveApiKey = (key: string) => {
   } catch {}
 }
 
-const MODEL_NAME = getEnv('VITE_GEMINI_MODEL') || 'gemini-3.1-flash-lite'
+const MODEL_NAME = getEnv('VITE_GEMINI_MODEL') || 'gemini-3.5-flash-lite'
 
 export interface ExtractedOrder {
   menuId: string

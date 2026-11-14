@@ -9,7 +9,6 @@ import {
   CreditCard,
   Download,
   History,
-  Key,
   Lock,
   Plus,
   Receipt,
@@ -25,7 +24,6 @@ import {
 import { useApp } from '../lib/store'
 import { chLabel, rp, type Channel, type Tx } from '../lib/data'
 import { Button, Card, EmptyState, InfoTip, inputCls, Sheet, TopBar, cx } from '../components/ui'
-import { testGeminiConnection } from '../lib/gemini'
 
 /* 1. LAYAR RIWAYAT TRANSAKSI */
 export function Riwayat() {
@@ -163,11 +161,6 @@ export function Pengaturan() {
   const [newCashierName, setNewCashierName] = useState('')
   const [newPin, setNewPin] = useState('')
 
-  // Settings State Form
-  const [tempApiKey, setTempApiKey] = useState(a.apiKey)
-  const [apiStatus, setApiStatus] = useState<string | null>(null)
-  const [testingApi, setTestingApi] = useState(false)
-
   // Commission Edit State
   const [commGofood, setCommGofood] = useState(a.comm.gofood)
   const [commShopee, setCommShopee] = useState(a.comm.shopee)
@@ -181,18 +174,6 @@ export function Pengaturan() {
     a.setCashierName(newCashierName)
     setShowAddCashier(false)
     a.toast(`Akun kasir "${newCashierName}" berhasil ditambahkan`)
-  }
-
-  const handleSaveApi = () => {
-    a.updateApiKey(tempApiKey)
-  }
-
-  const handleTestApi = async () => {
-    setTestingApi(true)
-    const res = await testGeminiConnection(tempApiKey)
-    setApiStatus(res.message)
-    setTestingApi(false)
-    a.toast(res.ok ? 'Koneksi Gemini AI Sukses!' : 'Koneksi AI Gagal')
   }
 
   const handleSaveCommissions = () => {
@@ -235,9 +216,9 @@ export function Pengaturan() {
       {/* Header Web */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200/80">
         <div>
-          <h1 className="text-xl lg:text-2xl font-black text-slate-900 tracking-tight">Pengaturan Toko &amp; Integrasi</h1>
+          <h1 className="text-xl lg:text-2xl font-black text-slate-900 tracking-tight">Pengaturan Toko &amp; Kasir</h1>
           <p className="text-xs text-slate-500 font-medium mt-0.5">
-            Konfigurasi Kunci API AI, Skema Komisi, Target Margin, &amp; Manajemen Kasir
+            Skema Komisi Aplikasi, Target Margin, Biaya Operasional, &amp; Manajemen Kasir
           </p>
         </div>
 
@@ -248,63 +229,9 @@ export function Pengaturan() {
 
       {/* Grid 2 Kolom Responsif Desktop */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-        {/* Kolom Kiri: Integrasi API & Skema Komisi */}
+        {/* Kolom Kiri: Skema Komisi & Parameter Finansial */}
         <div className="space-y-5">
-          {/* Card 1: Integrasi Google Gemini API Studio */}
-          <Card className="p-5 space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="size-8 rounded-xl bg-emerald-50 text-emerald-800 grid place-items-center">
-                  <Key size={16} />
-                </div>
-                <div>
-                  <h3 className="font-extrabold text-sm text-slate-900">Integrasi Google AI Studio</h3>
-                  <span className="text-[11px] text-slate-500">Model: gemini-3.1-flash-lite (Flash)</span>
-                </div>
-              </div>
-              <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-md border border-emerald-200">
-                Aktif
-              </span>
-            </div>
-
-            <div>
-              <label className="text-xs font-bold text-slate-700 block mb-1">
-                Kunci API Gemini (AI Studio Key)
-              </label>
-              <input
-                type="password"
-                className={inputCls + ' font-mono text-xs'}
-                placeholder="Masukkan API Key Google AI Studio..."
-                value={tempApiKey}
-                onChange={(e) => setTempApiKey(e.target.value)}
-              />
-              <span className="text-[11px] text-slate-400 mt-1 block">
-                Digunakan untuk Asisten Catat AI (ekstraksi screenshot rekap pesanan) &amp; konsultasi Tanya Bisnis AI.
-              </span>
-            </div>
-
-            {apiStatus && (
-              <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-700">
-                {apiStatus}
-              </div>
-            )}
-
-            <div className="flex gap-2">
-              <Button
-                variant="secondary"
-                disabled={testingApi}
-                onClick={handleTestApi}
-                className="flex-1 h-9 text-xs"
-              >
-                {testingApi ? 'Menguji...' : 'Uji Status Koneksi'}
-              </Button>
-              <Button onClick={handleSaveApi} className="flex-1 h-9 text-xs">
-                Simpan Kunci API
-              </Button>
-            </div>
-          </Card>
-
-          {/* Card 2: Skema Potongan Komisi Saluran Online */}
+          {/* Card: Skema Potongan Komisi Saluran Online */}
           <Card className="p-5 space-y-4">
             <div className="flex items-center justify-between">
               <div>

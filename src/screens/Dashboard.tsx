@@ -645,11 +645,10 @@ export function Tanya() {
           {messages.map((m) => (
             <div key={m.id} className={`flex flex-col anim-fade-in-up ${m.role === 'user' ? 'items-end' : 'items-start'}`}>
               <div
-                className={`rounded-2xl p-4 max-w-[85%] text-xs leading-relaxed shadow-xs transition-all ${
-                  m.role === 'user'
+                className={`rounded-2xl p-4 max-w-[85%] text-xs leading-relaxed shadow-xs transition-all ${m.role === 'user'
                     ? 'bg-emerald-700 text-white rounded-br-none'
                     : 'bg-white border border-slate-200 text-slate-800 rounded-bl-none'
-                }`}
+                  }`}
               >
                 {m.role === 'ai' && m.animate ? (
                   <TypewriterText text={m.text} onDone={() => handleFinishAnimation(m.id)} />
