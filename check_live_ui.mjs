@@ -361,6 +361,21 @@ async function runLiveCheck() {
     })
     console.log(`[PASS] Mobile Pengaturan Toko captured (Overflow: ${hasOverflowM9 ? 'YES (BAD)' : 'NO (GOOD)'})`)
 
+    // I.2 Mobile Logout Verification (Clicking Logout from Mobile Header)
+    await page.evaluate(() => {
+      const buttons = Array.from(document.querySelectorAll('button'))
+      const logoutBtn = buttons.find((b) => b.textContent.includes('Keluar'))
+      if (logoutBtn) logoutBtn.click()
+    })
+    await new Promise((r) => setTimeout(r, 600))
+    const isLoginVisible = await page.evaluate(() => {
+      return !!document.querySelector('div[data-name="Layar Masuk"]')
+    })
+    console.log(`[PASS] Mobile Logout Button clicked -> Navigated to Login: ${isLoginVisible ? 'SUCCESS (GOOD)' : 'FAILED'}`)
+    if (!isLoginVisible) {
+      results.consoleErrors.push('Mobile Logout button did not navigate to Layar Masuk')
+    }
+
     // J. Mobile Login Page
     await page.goto(`${BASE_URL}/login`, { waitUntil: 'networkidle0' })
     await new Promise((r) => setTimeout(r, 500))

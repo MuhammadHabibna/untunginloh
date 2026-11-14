@@ -10,6 +10,7 @@ import {
   Download,
   History,
   Lock,
+  LogOut,
   Plus,
   Receipt,
   Settings,
@@ -383,6 +384,30 @@ export function Pengaturan() {
             </div>
             <span className="text-xs font-bold text-emerald-800 underline">Lihat Paket</span>
           </div>
+
+          {/* Sesi Akun & Keluar (Logout) */}
+          <Card className="p-5 space-y-3.5 border-slate-200 bg-white shadow-2xs">
+            <div className="flex items-center gap-3">
+              <div className="size-10 rounded-xl bg-slate-100 text-slate-700 grid place-items-center shrink-0">
+                <LogOut size={18} className="text-slate-600" />
+              </div>
+              <div>
+                <h4 className="font-extrabold text-sm text-slate-900">Sesi Akun Pengguna</h4>
+                <p className="text-xs text-slate-500">
+                  Sedang masuk sebagai <strong>{a.role === 'owner' ? `${a.shop.ownerName} (Pemilik Toko)` : `${a.cashierName} (Kasir)`}</strong>
+                </p>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={a.logout}
+              className="w-full h-10 px-4 rounded-xl text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 border border-red-200 flex items-center justify-center gap-2 transition-all cursor-pointer shadow-2xs active:scale-[0.99]"
+            >
+              <LogOut size={15} />
+              <span>Keluar dari Akun Toko (Logout)</span>
+            </button>
+          </Card>
         </div>
       </div>
 

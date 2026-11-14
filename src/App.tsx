@@ -75,9 +75,9 @@ function MainShell() {
 
   if (isAuth) {
     return (
-      <div className="min-h-dvh bg-slate-50 flex items-center justify-center p-4">
+      <div className="min-h-dvh bg-slate-50 flex items-center justify-center p-4 overflow-y-auto">
         <Toast msg={a.toastMsg} />
-        <div className="w-full max-w-md">{currentView}</div>
+        <div className="w-full max-w-md py-4">{currentView}</div>
       </div>
     )
   }
@@ -200,9 +200,44 @@ function MainShell() {
           </div>
         </header>
 
+        {/* Top Header Mobile Native dengan Logo, Peran, & Tombol Keluar (Logout) */}
+        <header className="lg:hidden h-14 bg-white border-b border-slate-200/80 px-4 flex items-center justify-between shrink-0 z-20">
+          <div className="flex items-center gap-2 min-w-0">
+            <LogoUntunginLOH size={26} variant="full" />
+          </div>
+
+          <div className="flex items-center gap-2">
+            {/* Status Peran Pengguna */}
+            <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-slate-50 border border-slate-200 text-[11px] font-bold text-slate-700">
+              {a.role === 'owner' ? (
+                <>
+                  <ShieldCheck size={13} className="text-emerald-700 shrink-0" />
+                  <span className="truncate max-w-[85px]">{a.shop.ownerName}</span>
+                </>
+              ) : (
+                <>
+                  <UserCheck size={13} className="text-amber-700 shrink-0" />
+                  <span className="truncate max-w-[85px]">{a.cashierName}</span>
+                </>
+              )}
+            </div>
+
+            {/* Tombol Logout Mobile */}
+            <button
+              type="button"
+              onClick={a.logout}
+              title="Keluar dari akun toko"
+              className="flex items-center gap-1 text-[11px] font-bold text-red-600 bg-red-50 hover:bg-red-100 border border-red-200/80 px-2.5 py-1 rounded-lg transition-colors cursor-pointer active:scale-95 shadow-2xs"
+            >
+              <LogOut size={13} />
+              <span>Keluar</span>
+            </button>
+          </div>
+        </header>
+
         {/* Main View Scrollable */}
         <main ref={scrollRef} className="flex-1 overflow-y-auto">
-          <div className="w-full anim-fade-in" key={`${a.tenantId}-${a.screen}`}>{currentView}</div>
+          <div className="w-full anim-fade-in pb-20 lg:pb-8" key={`${a.tenantId}-${a.screen}`}>{currentView}</div>
         </main>
 
         {/* Floating Cart Bar di Kasir (Hanya tampil di Mobile jika item > 0) */}

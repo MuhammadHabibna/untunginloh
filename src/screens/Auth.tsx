@@ -55,7 +55,7 @@ export function Auth() {
   }
 
   return (
-    <div data-name="Layar Masuk" className="px-5 py-8 min-h-dvh flex flex-col justify-between max-w-md mx-auto anim-fade-in-up">
+    <div data-name="Layar Masuk" className="px-4 py-4 w-full flex flex-col justify-between max-w-md mx-auto anim-fade-in-up">
       <div className="space-y-6 pt-2">
         {/* Logo Resmi UntunginLOH */}
         <div className="text-center flex flex-col items-center">
@@ -374,7 +374,7 @@ export function Onboarding() {
   }
 
   return (
-    <div data-name="Layar Onboarding" className="px-5 py-6 min-h-dvh flex flex-col justify-between max-w-md mx-auto">
+    <div data-name="Layar Onboarding" className="px-4 py-4 w-full flex flex-col justify-between max-w-md mx-auto">
       <div className="space-y-5">
         {/* Header Onboarding */}
         <div className="flex items-center justify-between">
