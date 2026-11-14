@@ -1,9 +1,9 @@
-# UntunginLOH — Kasir Pintar & Kecerdasan Margin UMKM Berbasis AI
+# UntunginLOH - Kasir Pintar & Kecerdasan Margin UMKM Berbasis AI
 
 > **LOGICODIX Hackathon Competition 2026 (Universitas Negeri Surabaya - UNESA)**  
 > **Kategori**: Web Application (Mobile-First Responsive Web)  
 > **Subtema**: Local MSME & Creative Economy (UMKM Lokal & Ekonomi Kreatif)  
-> **Status**: Siap Uji Localhost, Video Demo 3–5 Menit, & Live Final Pitching
+> **Status**: Siap Uji Localhost, Video Demo 3-5 Menit, & Live Final Pitching
 
 ---
 
@@ -55,28 +55,28 @@
 
 ```mermaid
 flowchart TD
-    User["👤 Pengguna (Pemilik / Kasir)"] --> UI["📱 Mobile-First Responsive Web UI (React 19 + Vite)"]
+    User[" Pengguna (Pemilik / Kasir)"] --> UI[" Mobile-First Responsive Web UI (React 19 + Vite)"]
     
     subgraph Client_App ["Frontend Core (UntunginLOH)"]
-        UI --> DualView["🖥️ Responsive Dual-View (Full Web / 390px Mobile Frame)"]
-        DualView --> Store["⚡ Reactive Global Store (useStore / Multi-Tenant RLS Simulation)"]
+        UI --> DualView["️ Responsive Dual-View (Full Web / 390px Mobile Frame)"]
+        DualView --> Store[" Reactive Global Store (useStore / Multi-Tenant RLS Simulation)"]
         DualView --> InfoModal["ℹ️ Kamus Edukasi Istilah Interaktif (i)"]
     end
     
     subgraph Data_Flow ["Alur Pengolahan & Logika Bisnis"]
-        Store --> POS["🛒 Kasir Cepat & Komisi Multi-Jalur (0% - 20%)"]
-        Store --> BOM["🥣 Resep & Kalkulasi HPP Otomatis"]
-        Store --> Forecast["📈 7-Day Moving Average Algorithm"]
+        Store --> POS[" Kasir Cepat & Komisi Multi-Jalur (0% - 20%)"]
+        Store --> BOM[" Resep & Kalkulasi HPP Otomatis"]
+        Store --> Forecast[" 7-Day Moving Average Algorithm"]
     end
     
     subgraph AI_Engine ["Modul Kecerdasan Buatan (Green IT & Fallback)"]
-        Store --> AIAssistant["✨ Asisten Catat (Dikte & Screenshot Rekap)"]
-        AIAssistant --> Cache["🍃 Local Cache Layer (Green IT - Zero Overcomputation)"]
-        AIAssistant --> Fallback["🛡️ Graceful Degradation / Manual Cashier Fallback"]
-        Store --> AIConsult["💬 Tanya Bisnis Real-Time Q&A"]
+        Store --> AIAssistant[" Asisten Catat (Dikte & Screenshot Rekap)"]
+        AIAssistant --> Cache[" Local Cache Layer (Green IT - Zero Overcomputation)"]
+        AIAssistant --> Fallback["️ Graceful Degradation / Manual Cashier Fallback"]
+        Store --> AIConsult[" Tanya Bisnis Real-Time Q&A"]
     end
 
-    POS --> InstantFeedback["🎉 Umpan Balik Instan (Untung Bersih Hari Ini)"]
+    POS --> InstantFeedback[" Umpan Balik Instan (Untung Bersih Hari Ini)"]
 ```
 
 ---
@@ -156,5 +156,5 @@ Buka peramban di URL: **`http://localhost:5173`**
 
 ---
 
-*Hak Cipta © 2026 Tim Pengembang UntunginLOH — LOGICODIX UNESA 2026.*
+*Hak Cipta © 2026 Tim Pengembang UntunginLOH - LOGICODIX UNESA 2026.*
 

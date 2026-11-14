@@ -12,7 +12,7 @@ if (!fs.existsSync(SCREENSHOT_DIR)) {
 }
 
 async function runLiveCheck() {
-  console.log('🚀 Starting Automated Live UI Quality Check on', BASE_URL)
+  console.log('Starting Automated Live UI Quality Check on', BASE_URL)
   console.log('   Using Chrome at:', CHROME_PATH)
 
   const browser = await puppeteer.launch({

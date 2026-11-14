@@ -1,10 +1,12 @@
 // src/screens/Dashboard.tsx - Dashboard Web & Mobile Responsif Profesional UntunginLOH
 import { useState, useRef, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import {
   ArrowUp,
   Coins,
   Cpu,
   Flame,
+  Lightbulb,
   LoaderCircle,
   MessageCircle,
   MessageSquare,
@@ -15,6 +17,7 @@ import {
   TrendingUp,
   Trophy,
   CheckCircle2,
+  X,
 } from 'lucide-react'
 import { useApp } from '../lib/store'
 import {
@@ -25,8 +28,159 @@ import {
   rp,
   SALES_7D,
 } from '../lib/data'
-import { Button, Card, InfoTip, inputCls } from '../components/ui'
+import { Button, Card, InfoTip, inputCls, cx } from '../components/ui'
 import { askBusinessGemini } from '../lib/gemini'
+
+function TrendInsightTip({ className = '' }: { className?: string }) {
+  const [open, setOpen] = useState(false)
+  const [hovered, setHovered] = useState(false)
+  const [coords, setCoords] = useState<{ top: number; left: number; placeBelow: boolean } | null>(null)
+  const btnRef = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    if (!open) return
+    const prevOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false)
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.body.style.overflow = prevOverflow
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [open])
+
+  const handleMouseEnter = () => {
+    if (typeof window !== 'undefined' && window.matchMedia && !window.matchMedia('(hover: hover)').matches) {
+      return
+    }
+    const rect = btnRef.current?.getBoundingClientRect()
+    if (rect) {
+      const tooltipWidth = 280
+      const left = Math.max(12, Math.min(window.innerWidth - tooltipWidth - 12, rect.left + rect.width / 2 - tooltipWidth / 2))
+      const placeBelow = rect.top < 150
+      const top = placeBelow ? rect.bottom + 8 : rect.top - 8
+      setCoords({ top, left, placeBelow })
+      setHovered(true)
+    }
+  }
+
+  const handleMouseLeave = () => {
+    setHovered(false)
+  }
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    setHovered(false)
+    setOpen(true)
+  }
+
+  const tooltip = hovered && coords && typeof document !== 'undefined'
+    ? createPortal(
+        <div
+          style={{ position: 'fixed', top: coords.top, left: coords.left, width: 280, zIndex: 9999 }}
+          className="pointer-events-none rounded-xl bg-slate-900 text-white p-3.5 shadow-xl text-left anim-fade-in text-xs space-y-2 border border-slate-700"
+        >
+          <div className="flex items-center justify-between">
+            <span className="font-bold text-emerald-400 text-xs">Insight Rekomendasi Tren</span>
+            <span className="text-[10px] font-semibold bg-emerald-950 text-emerald-300 px-1.5 py-0.5 rounded border border-emerald-800">
+              Peluang Akhir Pekan
+            </span>
+          </div>
+          <p className="text-[11px] text-slate-200 leading-relaxed">
+            Penjualan konsisten melonjak pada hari Sabtu dan Minggu (proyeksi Rp1.520.000/hari).
+          </p>
+          <div className="pt-1.5 border-t border-slate-800 text-[11px] text-amber-300 font-medium">
+            <strong className="text-amber-400">Saran Aksi:</strong> Siapkan tambahan stok bahan baku sejak Jumat siang agar tidak kehabisan porsi saat akhir pekan.
+          </div>
+        </div>,
+        document.body
+      )
+    : null
+
+  const modal = open && typeof document !== 'undefined'
+    ? createPortal(
+        <div
+          role="dialog"
+          aria-modal="true"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs anim-fade-in"
+          onClick={() => setOpen(false)}
+        >
+          <div
+            className="w-full max-w-sm rounded-2xl bg-white border border-slate-200 shadow-2xl p-5 text-left anim-scale-up space-y-3.5"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex items-center gap-2.5">
+                <div className="size-9 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 grid place-items-center shrink-0 font-bold">
+                  <Lightbulb size={18} />
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-900 text-sm">Insight Rekomendasi Tren</h4>
+                  <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                    Peluang Akhir Pekan
+                  </span>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                className="size-7 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 grid place-items-center cursor-pointer shrink-0"
+                aria-label="Tutup"
+              >
+                <X size={15} />
+              </button>
+            </div>
+
+            <p className="text-xs text-slate-700 leading-relaxed">
+              Berdasarkan algoritma 7-Day Moving Average, penjualan toko Anda konsisten mengalami lonjakan signifikan pada hari <strong>Sabtu dan Minggu</strong> (diproyeksikan mencapai <strong>Rp1.520.000 per hari</strong>). Hari Rabu merupakan titik penjualan paling tenang.
+            </p>
+
+            <div className="p-3 rounded-xl bg-amber-50/80 border border-amber-200/90 text-xs text-amber-950 space-y-1">
+              <span className="font-extrabold text-amber-900 block text-xs">Saran Aksi Operasional:</span>
+              <p className="leading-relaxed">
+                Siapkan tambahan stok bahan baku kelapa dan cup kemasan sejak hari Jumat siang agar tidak kehabisan porsi saat jam sibuk pesanan akhir pekan.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              className="w-full h-9 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs cursor-pointer shadow-xs active:scale-[0.99] transition-all"
+            >
+              Tutup
+            </button>
+          </div>
+        </div>,
+        document.body
+      )
+    : null
+
+  return (
+    <>
+      <button
+        ref={btnRef}
+        type="button"
+        onClick={handleClick}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        className={cx(
+          'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold border transition-colors cursor-pointer select-none',
+          'border-emerald-200 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 shadow-2xs',
+          className
+        )}
+        title="Klik atau arahkan kursor untuk melihat insight tren dan saran aksi"
+        aria-label="Lihat Insight Tren"
+      >
+        <Lightbulb size={13} className="text-emerald-700 shrink-0" />
+        <span>Insight Tren</span>
+      </button>
+      {tooltip}
+      {modal}
+    </>
+  )
+}
 
 function MovingAverageChart() {
   const [activeIdx, setActiveIdx] = useState<number | null>(null)
@@ -402,42 +556,22 @@ export function Dashboard() {
 
           {/* Grafik 7 Hari */}
           <Card className="p-5">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
               <div>
-                <h3 className="font-extrabold text-sm text-slate-900 flex items-center">
+                <h3 className="font-extrabold text-sm text-slate-900 flex items-center gap-1.5">
                   Tren &amp; Proyeksi Penjualan 7 Hari <InfoTip termKey="forecast" />
                 </h3>
                 <span className="text-xs text-slate-400">Algoritma 7-Day Moving Average &bull; Tingkat Kepercayaan: Sedang</span>
               </div>
-              <span className="text-xs font-bold text-slate-600 bg-slate-100 px-2.5 py-1 rounded-lg">
-                Basis: 6 Hari Data
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-slate-600 bg-slate-100 px-2.5 py-1 rounded-lg">
+                  Basis: 6 Hari Data
+                </span>
+                <TrendInsightTip />
+              </div>
             </div>
 
             <MovingAverageChart />
-
-            {/* Kotak Insight Praktis UMKM */}
-            <div className="mt-4 p-3.5 rounded-xl bg-emerald-50/70 border border-emerald-200/80 flex items-start gap-3">
-              <div className="size-8 rounded-lg bg-emerald-700 text-white grid place-items-center shrink-0 mt-0.5 shadow-xs">
-                <Sparkles size={16} />
-              </div>
-              <div className="space-y-1">
-                <div className="flex items-center gap-2">
-                  <span className="font-extrabold text-xs text-emerald-950">
-                    Insight Bisnis &amp; Rekomendasi:
-                  </span>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-200/90 text-emerald-900">
-                    Peluang Akhir Pekan
-                  </span>
-                </div>
-                <p className="text-xs text-slate-700 leading-relaxed">
-                  Penjualan toko Anda konsisten melonjak pada hari <strong>Sabtu &amp; Minggu</strong> (diproyeksikan tembus <strong>Rp1.520.000/hari</strong>). Hari Rabu merupakan titik penjualan paling tenang.
-                </p>
-                <p className="text-xs text-emerald-900 font-semibold pt-0.5">
-                  💡 <strong>Saran Aksi:</strong> Siapkan tambahan stok bahan baku es kelapa dan cup kemasan sejak hari Jumat siang agar tidak kehabisan porsi saat jam sibuk pesanan akhir pekan.
-                </p>
-              </div>
-            </div>
           </Card>
         </div>
 
