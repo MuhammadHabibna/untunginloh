@@ -264,22 +264,19 @@ export function Dashboard() {
           </div>
         </Card>
 
-        {/* Ringkasan AI Harian Tersimpan di Cache (Green IT) */}
-        <Card className="lg:col-span-6 p-4 flex flex-col justify-between bg-emerald-50/40 border-emerald-200/80">
+        {/* Ringkasan AI Harian */}
+        <Card className="lg:col-span-6 p-4 flex flex-col justify-center bg-emerald-50/40 border-emerald-200/80">
           <div>
             <div className="flex items-center gap-2 mb-1.5">
               <Sparkles size={16} className="text-emerald-700" />
               <span className="font-extrabold text-xs text-emerald-950">
-                Ringkasan AI Harian (Tersimpan di Cache Database)
+                Ringkasan AI Harian
               </span>
             </div>
             <p className="text-xs text-slate-700 leading-relaxed">
               Penjualan toko hari ini berjalan stabil dengan untung bersih Rp312.000. Perhatian khusus pada jalur ShopeeFood di mana margin hanya 15% akibat komisi 20%.
             </p>
           </div>
-          <span className="text-[10px] text-emerald-800 font-medium pt-2">
-            Cache aktif &bull; Efisiensi Green IT tanpa pemanggilan ulang API Gemini
-          </span>
         </Card>
       </div>
 
