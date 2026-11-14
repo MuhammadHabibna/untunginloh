@@ -15,7 +15,7 @@ import {
   Lightbulb,
 } from 'lucide-react'
 import { useApp } from '../lib/store'
-import { chLabel, modal, rp } from '../lib/data'
+import { chLabel, getTodayIso, modal, rp } from '../lib/data'
 import {
   Button,
   Card,
@@ -84,32 +84,36 @@ export function Kasir() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* KOLOM KIRI (CATALOG MENU) */}
         <div className="lg:col-span-8 space-y-4">
-          {/* Controls: Tanggal & Jalur Jualan */}
+          {/* Controls: Tanggal Fleksibel & Search */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-xs">
-            {/* Tanggal */}
-            <div className="flex items-center gap-2 text-xs">
-              <span className="font-semibold text-slate-500">Tanggal:</span>
-              <div className="flex gap-1">
-                <button
-                  type="button"
-                  onClick={() => a.setTxDate('today')}
-                  className={`px-3 py-1.5 rounded-xl font-bold text-xs transition-colors cursor-pointer ${
-                    a.txDate === 'today' ? 'bg-emerald-700 text-white' : 'text-slate-600 hover:bg-slate-100'
-                  }`}
-                >
-                  Hari Ini
-                </button>
-                <button
-                  type="button"
-                  onClick={() => a.setTxDate('yesterday')}
-                  className={`px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1 transition-colors cursor-pointer ${
-                    a.txDate === 'yesterday'
-                      ? 'bg-amber-600 text-white'
-                      : 'text-amber-800 bg-amber-50 hover:bg-amber-100'
-                  }`}
-                >
-                  <History size={13} /> Kemarin (Susulan)
-                </button>
+            {/* Tanggal Input Tipe Date Fleksibel */}
+            <div className="flex flex-wrap items-center gap-2 text-xs">
+              <span className="font-bold text-slate-600 flex items-center gap-1.5 shrink-0">
+                <Calendar size={14} className="text-slate-400" /> Tanggal:
+              </span>
+              <div className="flex items-center gap-1.5">
+                <input
+                  type="date"
+                  value={a.txDate}
+                  max={getTodayIso()}
+                  onChange={(e) => a.setTxDate(e.target.value)}
+                  className="h-9 px-2.5 rounded-xl bg-slate-50 hover:bg-white border border-slate-200 text-xs font-bold text-slate-800 focus:outline-none focus:border-emerald-600 focus:bg-white focus:ring-1 focus:ring-emerald-600 transition-all cursor-pointer shadow-2xs"
+                />
+                {a.txDate === getTodayIso() ? (
+                  <span className="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200/80 font-bold text-[11px] shrink-0">
+                    Hari Ini
+                  </span>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => a.setTxDate(getTodayIso())}
+                    className="px-2.5 py-1 rounded-lg bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-200 font-bold text-[11px] flex items-center gap-1 transition-colors cursor-pointer shrink-0"
+                    title="Klik untuk kembali ke hari ini"
+                  >
+                    <History size={12} />
+                    <span>Susulan &bull; <span className="underline">Kembali Hari Ini</span></span>
+                  </button>
+                )}
               </div>
             </div>
 
@@ -117,7 +121,7 @@ export function Kasir() {
             <div className="relative w-full sm:w-64">
               <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
-                className={inputCls + ' pl-9 text-xs h-10'}
+                className={inputCls + ' pl-9 text-xs h-9'}
                 placeholder="Cari menu…"
                 value={q}
                 onChange={(e) => setQ(e.target.value)}

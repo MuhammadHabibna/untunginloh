@@ -5,6 +5,8 @@ import {
   BASE_SALES_TOKO_A,
   buildTx,
   DEFAULT_COMM,
+  formatIndoDate,
+  getTodayIso,
   MENUS_TOKO_A,
   MENUS_TOKO_B,
   SEED_TX_TOKO_A,
@@ -159,10 +161,10 @@ function useStore() {
   // 6. Integrasi Google AI Studio Key (Input Data PRD)
   const [apiKey, setApiKey] = useState<string>(getActiveApiKey())
 
-  // 7. Kasir State & Input Susulan (Hari Ini vs Kemarin)
+  // 7. Kasir State & Input Fleksibel Tanggal Transaksi
   const [cart, setCart] = useState<Record<string, number>>({})
   const [channel, setChannel] = useState<Channel>('tempat')
-  const [txDate, setTxDate] = useState<'today' | 'yesterday'>('today')
+  const [txDate, setTxDate] = useState<string>(getTodayIso())
   const [paymentMethod, setPaymentMethod] = useState<'qris' | 'tunai' | 'transfer'>('qris')
 
   // 8. Transactions State per Tenant
@@ -293,10 +295,27 @@ function useStore() {
     new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }).replace(':', '.')
 
   // Record Transactions
-  const record = (groups: { channel: Channel; lines: Line[] }[], isYesterday = false) => {
+  const record = (groups: { channel: Channel; lines: Line[] }[], customDateStr?: string) => {
+    const targetDate = customDateStr || txDate
+    const todayStr = getTodayIso()
+    const isToday = targetDate === todayStr
+
     const recorderName = role === 'owner' ? `${currentShop.ownerName} (Pemilik)` : `${cashierName} (Kasir)`
-    const dateLabel = isYesterday ? 'Kemarin (Susulan)' : 'Hari Ini'
-    const dayTag = isYesterday ? 'yesterday' : 'today'
+    let dateLabel = 'Hari Ini'
+    let dayTag: 'today' | 'yesterday' | 'past' = 'today'
+
+    if (!isToday) {
+      const targetTime = new Date(targetDate).setHours(0, 0, 0, 0)
+      const todayTime = new Date(todayStr).setHours(0, 0, 0, 0)
+      const diffDays = Math.round((todayTime - targetTime) / (1000 * 60 * 60 * 24))
+      if (diffDays === 1) {
+        dateLabel = 'Kemarin (Susulan)'
+        dayTag = 'yesterday'
+      } else {
+        dateLabel = `Susulan (${formatIndoDate(targetDate)})`
+        dayTag = 'past'
+      }
+    }
 
     const made = groups.map((g, i) =>
       buildTx(menus, comm, g.channel, g.lines, recorderName, dayTag, nowTime(), `tx_${Date.now()}_${i}`, dateLabel, false)
@@ -331,7 +350,7 @@ function useStore() {
     })
 
     nav('ringkasan')
-    toast(isYesterday ? 'Catatan susulan kemarin tersimpan' : 'Pesanan berhasil dicatat')
+    toast(isToday ? 'Pesanan berhasil dicatat' : `Catatan susulan tanggal ${formatIndoDate(targetDate)} tersimpan`)
   }
 
   const saveCart = () => {
@@ -342,7 +361,7 @@ function useStore() {
       toast('Pilih minimal 1 menu sebelum menyimpan transaksi')
       return
     }
-    record([{ channel, lines }], txDate === 'yesterday')
+    record([{ channel, lines }], txDate)
     setCart({})
   }
 
@@ -353,7 +372,7 @@ function useStore() {
     )
     record(
       [...g.entries()].map(([ch, lines]) => ({ channel: ch, lines })),
-      false
+      txDate
     )
   }
 

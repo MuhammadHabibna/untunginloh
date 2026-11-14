@@ -411,3 +411,21 @@ export const TEMPLATES = [
     bahan: ['Bahan baku / modal dasar 1', 'Bahan baku 2', 'Kemasan / operasional'],
   },
 ]
+
+export function getTodayIso(): string {
+  const d = new Date()
+  const year = d.getFullYear()
+  const month = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+export function formatIndoDate(isoStr: string): string {
+  if (!isoStr) return ''
+  const parts = isoStr.split('-')
+  if (parts.length !== 3) return isoStr
+  const [y, m, d] = parts
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des']
+  const mIdx = parseInt(m, 10) - 1
+  return `${parseInt(d, 10)} ${months[mIdx] || m} ${y}`
+}
