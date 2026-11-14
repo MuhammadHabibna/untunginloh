@@ -29,6 +29,7 @@ import { Button, Card, InfoTip, inputCls } from '../components/ui'
 import { askBusinessGemini } from '../lib/gemini'
 
 function MovingAverageChart() {
+  const [activeIdx, setActiveIdx] = useState<number | null>(null)
   const W = 520
   const H = 160
   const pad = 16
@@ -43,10 +44,26 @@ function MovingAverageChart() {
   const ptsForecast = `${getX(6)},${getY(SALES_7D[6])} ` + FORECAST_7D.map((v, i) => `${getX(i + 7)},${getY(v)}`).join(' ')
 
   const days = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min']
+  const allDays = [
+    'Senin (Realisasi)',
+    'Selasa (Realisasi)',
+    'Rabu (Realisasi)',
+    'Kamis (Realisasi)',
+    'Jumat (Realisasi)',
+    'Sabtu (Realisasi)',
+    'Minggu (Realisasi)',
+    'Senin (Proyeksi)',
+    'Selasa (Proyeksi)',
+    'Rabu (Proyeksi)',
+    'Kamis (Proyeksi)',
+    'Jumat (Proyeksi)',
+    'Sabtu (Proyeksi)',
+    'Minggu (Proyeksi)',
+  ]
 
   return (
     <figure className="w-full">
-      <svg viewBox={`0 0 ${W} ${H + 24}`} className="w-full h-auto">
+      <svg viewBox={`0 0 ${W} ${H + 24}`} className="w-full h-auto select-none">
         {[800, 1100, 1400].map((val) => (
           <line
             key={val}
@@ -90,10 +107,75 @@ function MovingAverageChart() {
           strokeLinejoin="round"
         />
 
-        {/* Dots */}
+        {/* Realisasi Dots */}
         {SALES_7D.map((v, i) => (
-          <circle key={i} cx={getX(i)} cy={getY(v)} r="4" fill="#15803D" />
+          <circle
+            key={i}
+            cx={getX(i)}
+            cy={getY(v)}
+            r={activeIdx === i ? 6 : 4}
+            fill="#15803D"
+            stroke={activeIdx === i ? '#FFFFFF' : 'none'}
+            strokeWidth={activeIdx === i ? 2 : 0}
+            className="transition-all"
+          />
         ))}
+
+        {/* Forecast Dots */}
+        {FORECAST_7D.map((v, i) => {
+          const idx = i + 7
+          return (
+            <circle
+              key={`fc-${i}`}
+              cx={getX(idx)}
+              cy={getY(v)}
+              r={activeIdx === idx ? 6 : 3.5}
+              fill="#D97706"
+              stroke={activeIdx === idx ? '#FFFFFF' : '#FEF3C7'}
+              strokeWidth={activeIdx === idx ? 2 : 1}
+              className="transition-all"
+            />
+          )
+        })}
+
+        {/* Area Sentuh Interaktif untuk Setiap Titik */}
+        {allData.map((v, i) => (
+          <circle
+            key={`hit-${i}`}
+            cx={getX(i)}
+            cy={getY(v)}
+            r="16"
+            fill="transparent"
+            className="cursor-pointer"
+            onMouseEnter={() => setActiveIdx(i)}
+            onMouseLeave={() => setActiveIdx(null)}
+            onClick={() => setActiveIdx(activeIdx === i ? null : i)}
+          />
+        ))}
+
+        {/* Tooltip Nilai Rupiah Aktif */}
+        {activeIdx !== null && (
+          <g className="anim-fade-in pointer-events-none">
+            <rect
+              x={Math.max(8, Math.min(W - 138, getX(activeIdx) - 65))}
+              y={Math.max(4, getY(allData[activeIdx]) - 32)}
+              width="130"
+              height="26"
+              rx="6"
+              fill="#0F172A"
+            />
+            <text
+              x={Math.max(8 + 65, Math.min(W - 138 + 65, getX(activeIdx)))}
+              y={Math.max(4 + 17, getY(allData[activeIdx]) - 15)}
+              textAnchor="middle"
+              fill="#FFFFFF"
+              fontSize="10"
+              fontWeight="700"
+            >
+              {allDays[activeIdx].split(' ')[0]}: Rp{(allData[activeIdx] * 1000).toLocaleString('id-ID')}
+            </text>
+          </g>
+        )}
 
         {/* Days Label */}
         {[...days, ...days].map((d, i) => (
@@ -103,15 +185,17 @@ function MovingAverageChart() {
             y={H + 18}
             textAnchor="middle"
             fontSize="11"
-            fontWeight="600"
-            fill={i < 7 ? '#15803D' : '#D97706'}
+            fontWeight={activeIdx === i ? '700' : '600'}
+            fill={activeIdx === i ? '#0F172A' : i < 7 ? '#15803D' : '#D97706'}
+            className="cursor-pointer"
+            onClick={() => setActiveIdx(activeIdx === i ? null : i)}
           >
             {d}
           </text>
         ))}
       </svg>
 
-      <div className="flex items-center justify-between text-xs font-semibold text-slate-500 mt-3 pt-2 border-t border-slate-100">
+      <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-semibold text-slate-500 mt-3 pt-2 border-t border-slate-100">
         <span className="flex items-center gap-1.5 text-emerald-800">
           <span className="w-3.5 h-1 bg-emerald-700 rounded-full" /> 7 Hari Realisasi Penjualan
         </span>
@@ -331,6 +415,29 @@ export function Dashboard() {
             </div>
 
             <MovingAverageChart />
+
+            {/* Kotak Insight Praktis UMKM */}
+            <div className="mt-4 p-3.5 rounded-xl bg-emerald-50/70 border border-emerald-200/80 flex items-start gap-3">
+              <div className="size-8 rounded-lg bg-emerald-700 text-white grid place-items-center shrink-0 mt-0.5 shadow-xs">
+                <Sparkles size={16} />
+              </div>
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="font-extrabold text-xs text-emerald-950">
+                    Insight Bisnis &amp; Rekomendasi:
+                  </span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-200/90 text-emerald-900">
+                    Peluang Akhir Pekan
+                  </span>
+                </div>
+                <p className="text-xs text-slate-700 leading-relaxed">
+                  Penjualan toko Anda konsisten melonjak pada hari <strong>Sabtu &amp; Minggu</strong> (diproyeksikan tembus <strong>Rp1.520.000/hari</strong>). Hari Rabu merupakan titik penjualan paling tenang.
+                </p>
+                <p className="text-xs text-emerald-900 font-semibold pt-0.5">
+                  💡 <strong>Saran Aksi:</strong> Siapkan tambahan stok bahan baku es kelapa dan cup kemasan sejak hari Jumat siang agar tidak kehabisan porsi saat jam sibuk pesanan akhir pekan.
+                </p>
+              </div>
+            </div>
           </Card>
         </div>
 

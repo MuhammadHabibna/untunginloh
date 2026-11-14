@@ -1,5 +1,5 @@
 // src/components/ui.tsx - Clean, Minimalist UI Components (Zero AI Slop)
-import { useState, useEffect, type ReactNode } from 'react'
+import { useState, useEffect, useRef, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import {
   ArrowDown,
@@ -27,10 +27,13 @@ import { useApp } from '../lib/store'
 export const cx = (...classes: (string | false | null | undefined)[]) => classes.filter(Boolean).join(' ')
 
 /* =========================================================
-   1. IKON INFORMASI (i) - MINIMALIS & ELEGAN
+   1. IKON INFORMASI (i) - DUAL MODE (HOVER DESKTOP + KLIK/TAP MOBILE)
    ========================================================= */
 export function InfoTip({ termKey, className = '' }: { termKey: keyof typeof TERMS | string; className?: string }) {
   const [open, setOpen] = useState(false)
+  const [hovered, setHovered] = useState(false)
+  const [coords, setCoords] = useState<{ top: number; left: number; placeBelow: boolean } | null>(null)
+  const btnRef = useRef<HTMLButtonElement>(null)
   const item: TermInfo | undefined = TERMS[termKey]
 
   useEffect(() => {
@@ -48,6 +51,31 @@ export function InfoTip({ termKey, className = '' }: { termKey: keyof typeof TER
   }, [open])
 
   if (!item) return null
+
+  const handleMouseEnter = () => {
+    if (typeof window !== 'undefined' && window.matchMedia && !window.matchMedia('(hover: hover)').matches) {
+      return
+    }
+    const rect = btnRef.current?.getBoundingClientRect()
+    if (rect) {
+      const tooltipWidth = 260
+      const left = Math.max(12, Math.min(window.innerWidth - tooltipWidth - 12, rect.left + rect.width / 2 - tooltipWidth / 2))
+      const placeBelow = rect.top < 130
+      const top = placeBelow ? rect.bottom + 8 : rect.top - 8
+      setCoords({ top, left, placeBelow })
+      setHovered(true)
+    }
+  }
+
+  const handleMouseLeave = () => {
+    setHovered(false)
+  }
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    setHovered(false)
+    setOpen(true)
+  }
 
   const modal = open ? (
     <div
@@ -95,23 +123,47 @@ export function InfoTip({ termKey, className = '' }: { termKey: keyof typeof TER
     </div>
   ) : null
 
+  // Hover Tooltip (Khusus Desktop via Portal Bebas Clipping)
+  const hoverTooltip = hovered && !open && coords && typeof document !== 'undefined' ? (
+    <div
+      role="tooltip"
+      style={{
+        position: 'fixed',
+        top: `${coords.top}px`,
+        left: `${coords.left}px`,
+        transform: coords.placeBelow ? 'translateY(0)' : 'translateY(-100%)',
+        width: '260px',
+        zIndex: 9999,
+      }}
+      className="hidden md:block p-3 bg-slate-900/95 text-white rounded-xl shadow-2xl border border-slate-700/80 text-left pointer-events-none anim-fade-in text-xs backdrop-blur-xs"
+    >
+      <div className="font-bold text-white mb-0.5">{item.title}</div>
+      <p className="text-[11px] text-slate-300 leading-snug">{item.desc}</p>
+      <div className="mt-2 pt-1.5 border-t border-slate-800 text-[10px] text-emerald-400 font-semibold flex items-center justify-between">
+        <span>Klik untuk rumus &amp; acuan</span>
+        <span>&rarr;</span>
+      </div>
+    </div>
+  ) : null
+
   return (
     <>
       <button
+        ref={btnRef}
         type="button"
-        onClick={(e) => {
-          e.stopPropagation()
-          setOpen(true)
-        }}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onClick={handleClick}
         aria-label={`Info ${item.title}`}
         className={cx(
-          'inline-flex items-center justify-center size-4 rounded-full text-slate-400 hover:text-emerald-700 hover:bg-slate-100 transition-colors shrink-0 align-middle ml-1 cursor-pointer',
+          'inline-flex items-center justify-center size-5 rounded-full text-slate-400 hover:text-emerald-700 hover:bg-slate-100 transition-colors shrink-0 align-middle ml-1 cursor-pointer focus:outline-none focus:ring-1 focus:ring-emerald-500',
           className
         )}
       >
-        <Info size={12} strokeWidth={2.2} />
+        <Info size={13} strokeWidth={2.2} />
       </button>
 
+      {hoverTooltip && createPortal(hoverTooltip, document.body)}
       {modal && typeof document !== 'undefined' ? createPortal(modal, document.body) : modal}
     </>
   )
